@@ -12,7 +12,7 @@ import { post } from './post.js'
 import { importProfile } from './import.js';
 import { getBalance, getKeys } from './bitcoin.js';
 
-export const DEBUG = true;
+export const DEBUG = false;
 export const APP_NAME = 'bsocial.cli';
 
 const conf = new Configstore('bsocial-cli');
