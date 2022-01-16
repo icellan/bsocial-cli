@@ -1,0 +1,55 @@
+{
+  "name": "bsocial-cli",
+  "version": "0.1.0",
+  "description": "Bitcoin Social CLI tool",
+  "author": "icellan (https://github.com/icellan)",
+  "license": "Open BSV License",
+  "homepage": "https://github.com/icellan/bsocial-cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/icellan/bsocial-cli.git"
+  },
+  "scripts": {
+    "build": "rimraf dist/ && babel src/ --presets minify --out-dir dist/",
+    "lint": "eslint ./src",
+    "do": "npm run build && node ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [
+    "social",
+    "bitcoin",
+    "bsv"
+  ],
+  "dependencies": {
+    "bitcoin-bap": "^1.1.2",
+    "bsocial": "0.0.1",
+    "bsv": "^1.5.6",
+    "chalk": "^5.0.0",
+    "clear": "^0.1.0",
+    "configstore": "^6.0.0",
+    "figlet": "^1.5.2",
+    "inquirer": "^8.2.0",
+    "inquirer-file-tree-selection-prompt": "^1.0.13",
+    "node-fetch": "^3.1.1",
+    "qrcode-terminal": "^0.12.0",
+    "yargs": "^17.3.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.0",
+    "@babel/core": "^7.13.1",
+    "@babel/plugin-transform-runtime": "^7.13.7",
+    "@babel/preset-env": "^7.13.5",
+    "babel-preset-minify": "^0.4.3",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "rimraf": "2.6.2"
+  },
+  "bin": {
+    "bsocial-cli": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
