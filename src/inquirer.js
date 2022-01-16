@@ -127,9 +127,25 @@ export const askProfileInfo = function() {
       }
     },
     {
-      name: 'bio',
+      name: 'description',
       type: 'input',
       message: 'Enter your bio / tagline:',
+      validate: function( ) {
+        return true;
+      }
+    },
+    {
+      name: 'logo',
+      type: 'input',
+      message: 'Avatar image url:',
+      validate: function( ) {
+        return true;
+      }
+    },
+    {
+      name: 'banner',
+      type: 'input',
+      message: 'Banner image url:',
       validate: function( ) {
         return true;
       }
@@ -143,9 +159,9 @@ export const askProfileInfo = function() {
       }
     },
     {
-      name: 'website',
+      name: 'url',
       type: 'input',
-      message: 'Enter your website:',
+      message: 'Enter your website url:',
       validate: function( ) {
         return true;
       }

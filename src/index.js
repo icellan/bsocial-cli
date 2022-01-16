@@ -12,7 +12,8 @@ import { post } from './post.js'
 import { importProfile } from './import.js';
 import { getBalance, getKeys } from './bitcoin.js';
 
-export const DEBUG = false;
+export const DEBUG = true;
+export const APP_NAME = 'bsocial.cli';
 
 const conf = new Configstore('bsocial-cli');
 const options = Yargs(hideBin(process.argv)).usage('Usage: -p <profile file>').
@@ -52,9 +53,9 @@ const run = async () => {
   if (!useProfile) {
     const result = await askProfile(conf);
     if (result.profile === '+ import') {
-      await importProfile(conf);
+      useProfile = await importProfile(conf);
     } else if (result.profile === '+ new') {
-      await newProfile(conf);
+      useProfile = await newProfile(conf);
     } else {
       useProfile = result.profile;
     }
