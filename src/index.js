@@ -76,8 +76,12 @@ const run = async () => {
 
     if (fsMessage) {
       await post(profile, fsMessage.trim());
+      // exit the process if we are piping content into a post
+      process.exit(0);
     } else if (options.message) {
       await post(profile, options.message);
+      // exit the process if we are passing a message via command line arguments
+      process.exit(0);
     } else {
       while (1) {
         const result = await askAction(conf);
