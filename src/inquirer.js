@@ -56,6 +56,7 @@ export const askAction = function(conf) {
       type: 'list',
       choices: [
         'post',
+        'reply',
         'edit profile',
         'delete profile',
         'transfer sats',
@@ -87,6 +88,24 @@ export const askMessage = function() {
           return true;
         } else {
           return 'Please write a message';
+        }
+      }
+    },
+  ];
+  return inquirer.prompt(questions);
+};
+
+export const askTxId = function() {
+  const questions = [
+    {
+      name: 'txid',
+      type: 'input',
+      message: 'Transaction ID of original post:',
+      validate: function( value ) {
+        if (value.length === 64) {
+          return true;
+        } else {
+          return 'Please input a valid transaction ID';
         }
       }
     },

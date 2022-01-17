@@ -6,7 +6,7 @@ import { APP_NAME } from './index.js'
 import { askMessage } from './inquirer.js'
 import { broadcastTransaction } from "./bitcoin.js";
 
-export const post = async function (profile, message) {
+export const post = async function (profile, message, contextTx = false) {
   if (!message) {
     const result = await askMessage()
     message = result?.message;
@@ -20,6 +20,9 @@ export const post = async function (profile, message) {
   const bsocial = new BSocial(APP_NAME);
   const post = bsocial.post();
   post.addText(message);
+  if (contextTx) {
+    post.setTxId(contextTx);
+  }
   const ops = post.getOps();
 
   const bap = new BAP(profile.xpriv);

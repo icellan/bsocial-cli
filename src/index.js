@@ -6,7 +6,7 @@ import { hideBin } from 'yargs/helpers'
 import Configstore from 'configstore';
 
 import { newProfile } from './new.js';
-import { askAction, askProfile } from './inquirer.js';
+import {askAction, askProfile, askTxId} from './inquirer.js';
 import { post } from './post.js'
 import { importProfile } from './import.js';
 import { getBalance } from './bitcoin.js';
@@ -23,9 +23,19 @@ const options = Yargs(hideBin(process.argv)).usage('Usage: -p <profile file>').
     describe: 'Profile to use',
     type: 'string',
   }).
+  option('l', {
+    alias: 'location',
+    describe: 'Show the location of the config file',
+    type: 'string',
+  }).
   option('m', {
     alias: 'message',
     describe: 'Message to send on-chain',
+    type: 'string',
+  }).
+  option('t', {
+    alias: 'txId',
+    describe: 'Reply to transaction ID',
     type: 'string',
   })
   .argv;
@@ -75,11 +85,11 @@ const run = async () => {
     }
 
     if (fsMessage) {
-      await post(profile, fsMessage.trim());
+      await post(profile, fsMessage.trim(), options.txId);
       // exit the process if we are piping content into a post
       process.exit(0);
     } else if (options.message) {
-      await post(profile, options.message);
+      await post(profile, options.message, options.txId);
       // exit the process if we are passing a message via command line arguments
       process.exit(0);
     } else {
@@ -87,6 +97,9 @@ const run = async () => {
         const result = await askAction(conf);
         if (result.action === 'post') {
           await post(profile, "");
+        } else if (result.action === 'reply') {
+          const r = await askTxId();
+          await post(profile, "", r.txid);
         } else if (result.action === 'transfer sats') {
           await transferSats(profile);
         } else if (result.action === 'load sats') {
