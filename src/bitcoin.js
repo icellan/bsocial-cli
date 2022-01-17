@@ -38,10 +38,8 @@ export const getTx = async function(txId) {
   return response.text();
 }
 
-export const broadcastTransaction = async function(profile, signedOps) {
-  const {privateKey, address} = getKeys(profile);
-
-  const opReturnHex = signedOps.map(o => Buffer.from(o, 'hex'));
+export const broadcastTransaction = async function(profile, signedOps, toAddress = null) {
+  const { privateKey, address } = getKeys(profile);
 
   const utxos = await getUtxos(profile);
   const txUtxos = [];
@@ -61,8 +59,15 @@ export const broadcastTransaction = async function(profile, signedOps) {
 
   const tx = new bsv.Transaction();
   tx.from(txUtxos);
-  tx.change(address);
-  tx.addSafeData(opReturnHex);
+
+  if (toAddress) {
+    tx.change(toAddress);
+  } else {
+    tx.change(address);
+    const opReturnHex = signedOps.map(o => Buffer.from(o, 'hex'));
+    tx.addSafeData(opReturnHex);
+  }
+
   tx.sign(privateKey);
 
   if (DEBUG) {

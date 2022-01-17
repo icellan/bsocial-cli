@@ -1,9 +1,11 @@
 import bsv from 'bsv';
 import { BAP } from 'bitcoin-bap';
-import { BAP_PROTOCOL_ADDRESS } from "bsocial/dist/constants.js";
+import { getSignedAliasOps } from "./profile.js";
 
-import { askProfileInfo, askProfileName } from './inquirer.js';
-import { broadcastTransaction } from "./bitcoin.js";
+import { askProfileInfo, askProfileName, askWaitFunding } from './inquirer.js';
+import { broadcastTransaction, getBalance } from "./bitcoin.js";
+import { loadSats } from "./sats.js";
+
 
 export const newProfile = async function (conf) {
   const profiles = Object.keys(conf.all);
@@ -26,6 +28,20 @@ export const newProfile = async function (conf) {
     ids,
   };
 
+  console.log("Please fund this address to be able to create the on-chain profile.\n");
+  loadSats(profile);
+
+  while (1) {
+    let balance = await getBalance(profile);
+    if (balance > 500) {
+      break;
+    }
+    const waitResult = await askWaitFunding();
+    if (waitResult.selected === 'cancel') {
+      return;
+    }
+  }
+
   const ops = identity.getIdTransaction();
   const signedOps = identity.signOpReturnWithAIP(ops);
 
@@ -34,37 +50,14 @@ export const newProfile = async function (conf) {
     return
   }
 
-  const aliasDoc = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    'alternateName': info.name || '',
-    'logo': info.logo || '',
-    'banner': info.banner || '',
-    'homeLocation': {
-      '@type': 'Place',
-      'name': info.location || '',
-    },
-    'description': info.description || '',
-    'url': info.url || '',
-    'paymail': info.paymail || '',
-    'bitcoinAddress': info.bitcoinAddress || '',
-  };
-
-  const aliasOps = [];
-  aliasOps.push(Buffer.from(BAP_PROTOCOL_ADDRESS).toString('hex'));
-  aliasOps.push(Buffer.from('ALIAS').toString('hex'));
-  aliasOps.push(Buffer.from(identity.getIdentityKey()).toString('hex'));
-  aliasOps.push(Buffer.from(JSON.stringify(aliasDoc)).toString('hex'));
-
-  const aliasSignedOps = identity.signOpReturnWithAIP(aliasOps);
+  //console.log({ result, info, xpriv, identity, ids });
+  conf.set(identity.name, profile);
+  const aliasSignedOps = getSignedAliasOps(info, identity);
 
   const aliasBroadcastResult = await broadcastTransaction(profile, aliasSignedOps);
   if (!aliasBroadcastResult) {
     return
   }
-
-  //console.log({ result, info, xpriv, identity, ids });
-  conf.set(identity.name, profile);
 
   return identity.name;
 };
