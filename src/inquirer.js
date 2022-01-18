@@ -197,7 +197,7 @@ export const askProfileImport = function(conf) {
   return inquirer.prompt(questions);
 };
 
-export const askProfileInfo = function(info) {
+export const askProfileInfo = function(info = {}) {
   const questions = [
     {
       name: 'name',
