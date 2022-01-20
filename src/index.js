@@ -11,7 +11,7 @@ import { post } from './post.js'
 import { importProfile } from './import.js';
 import { getBalance } from './bitcoin.js';
 import { loadSats, transferSats } from "./sats.js";
-import { deleteProfile, editProfile } from "./profile.js";
+import { deleteProfile, editProfile, resendIdTx } from "./profile.js";
 
 export const DEBUG = false;
 export const APP_NAME = 'bsocial.cli';
@@ -106,6 +106,8 @@ const run = async () => {
           loadSats(profile);
         } else if (result.action === 'edit profile') {
           await editProfile(profile);
+        } else if (result.action === 'resend id tx') {
+          await resendIdTx(profile);
         } else if (result.action === 'delete profile') {
           const result = await deleteProfile(useProfile, profile, conf);
           if (result) {

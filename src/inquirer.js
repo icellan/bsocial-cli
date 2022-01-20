@@ -58,6 +58,7 @@ export const askAction = function(conf) {
         'post',
         'reply',
         'edit profile',
+        'resend id tx',
         'delete profile',
         'transfer sats',
         'load sats',

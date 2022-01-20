@@ -4,6 +4,22 @@ import { broadcastTransaction, getBalance } from "./bitcoin.js";
 import { BAP_PROTOCOL_ADDRESS } from "bsocial/dist/constants.js";
 import { askAreYouSure, askProfileInfo } from "./inquirer.js";
 
+export const resendIdTx = async function (profile) {
+    const bap = new BAP(profile.xpriv);
+    bap.importIds(profile.ids);
+    const ids = bap.listIds();
+
+    const identity = bap.getId(ids[0]); // only support for 1 id per profile now
+    const ops = identity.getIdTransaction();
+
+    const broadcastResult = await broadcastTransaction(profile, ops);
+    if (!broadcastResult) {
+        return
+    }
+
+    return true;
+};
+
 export const editProfile = async function (profile) {
     const bap = new BAP(profile.xpriv);
     bap.importIds(profile.ids);

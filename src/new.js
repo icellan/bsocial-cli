@@ -43,9 +43,7 @@ export const newProfile = async function (conf) {
   }
 
   const ops = identity.getIdTransaction();
-  const signedOps = identity.signOpReturnWithAIP(ops);
-
-  const broadcastResult = await broadcastTransaction(profile, signedOps);
+  const broadcastResult = await broadcastTransaction(profile, ops);
   if (!broadcastResult) {
     return
   }
